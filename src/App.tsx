@@ -1,41 +1,32 @@
 import React, {Component} from 'react';
 
-type CounterState = {
-    counter: number
-}
+class App extends Component<any, any> {
 
-type Props = {
-    title?: string
-}
+    handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        console.log(e.target);
+    };
 
-class App extends Component<Props, CounterState> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            counter: 0,
-        };
-    }
+    handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log('Submit');
+    };
 
-    handleClick = () => {
-        this.setState(prev => {
-            return {
-                ...prev,
-                counter: prev.counter + 1,
-            };
-        });
+    handleCopy = (e: React.ClipboardEvent<HTMLInputElement>) => {
+        console.log('Copied!');
     };
 
     render() {
-        const {state: {counter}} = this;
-
         return (
-            <div>
-                <h1>{counter}</h1>
-                <button
-                    onClick={this.handleClick}
-                >{counter > 0 ? counter : null} + 1
-                </button>
-            </div>
+            <form onSubmit={this.handleSubmit}>
+                <label>
+                    <input type="text"
+                           name="text"
+                           onFocus={this.handleFocus}
+                           onCopy={this.handleCopy}
+                    />
+                </label>
+                <button type="submit">Submit</button>
+            </form>
         );
     }
 }
