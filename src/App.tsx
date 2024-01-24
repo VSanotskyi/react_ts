@@ -1,131 +1,109 @@
-import {
-    ChangeEvent,
+import React, {
     Component,
-    FC,
-    createRef,
-    CSSProperties,
-    MouseEvent,
+    createContext,
+    ContextType,
 } from 'react';
+import {createPortal} from 'react-dom';
 
-type Position = {
-    id: string,
-    value: string,
-    title: string,
+type PortalProps = {
+    children: React.ReactNode
 }
 
-type FormState = {
-    inputText: string,
-    textareaText: string,
-    selectText: string,
-    showData: {
-        name: string,
-        text: string,
-        position: string,
+class Portal extends Component<PortalProps> {
+    private el: HTMLDivElement = document.createElement('div');
+
+    public componentDidMount(): void {
+        document.body.appendChild(this.el);
+    }
+
+    public render(): React.ReactElement<PortalProps> {
+        return createPortal(this.props.children, this.el);
     }
 }
 
-const POSITIONS: Array<Position> = [
-    {
-        id: 'fd',
-        value: 'Front-end Developer',
-        title: 'Front-end Developer',
-    },
-    {
-        id: 'bd',
-        value: 'Back-end Developer',
-        title: 'Back-end Developer',
-    }];
-const DEFAULT_SELECT_VALUE: string = POSITIONS[0].value;
-const styles: CSSProperties = {display: 'block', marginBottom: '10px'};
-
-class Form extends Component<{}, FormState> {
+class MyComponent extends Component<any, { counter: number }> {
     state = {
-        inputText: '',
-        textareaText: '',
-        selectText: DEFAULT_SELECT_VALUE,
-        showData: {
-            name: '',
-            text: '',
-            position: '',
-        },
+        counter: 0,
     };
 
-    private rootRef = createRef<HTMLSelectElement>();
-
-    handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        const {target: {value: inputText}} = e;
-        this.setState({inputText});
-    };
-
-    handleTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-        const {target: {value: textareaText}} = e;
-        this.setState({textareaText});
-    };
-
-    handleSelectChange = (e: ChangeEvent<HTMLSelectElement>): void => {
-        const {target: {value: selectText}} = e;
-        this.setState({selectText});
-    };
-
-    handleShow = (e: MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        const {inputText, textareaText, selectText} = this.state;
-
-        this.setState({
-            inputText: '',
-            textareaText: '',
-            selectText: DEFAULT_SELECT_VALUE,
-            showData: {
-                name: inputText,
-                text: textareaText,
-                position: selectText,
-            },
-        });
+    handleClick = () => {
+        this.setState(({counter}) => ({counter: counter + 1}));
     };
 
     render() {
-        const {inputText, textareaText, selectText, showData} = this.state;
-        const {name, text, position} = showData;
-
         return (
-            <>
-                <form>
-                    <label style={styles}>
-                        Name:
-                        <input type="text"
-                               name="name"
-                               value={inputText}
-                               onChange={this.handleInputChange}
-                        />
-                    </label>
-                    <br/>
-                    <label style={styles}>
-                        Text:
-                        <textarea
-                            value={textareaText}
-                            onChange={this.handleTextAreaChange}
-                        ></textarea>
-                    </label>
-                    <br/>
-                    <select style={styles}
-                            value={selectText}
-                            onChange={this.handleSelectChange}
-                            ref={this.rootRef}
-                    >{POSITIONS.map(({id, value, title}) => (
-                        <option key={id}
-                                value={value}
-                        >{title}</option>
-                    ))}</select>
-                    <button onClick={this.handleShow}>Show data</button>
-                </form>
-                <h2>{name}</h2>
-                <h2>{text}</h2>
-                <h2>{position}</h2>
-            </>
+            <div onClick={this.handleClick}>
+                <h1>Clicks: {this.state.counter}</h1>
+                <Portal>
+                    <h2>Test Portal</h2>
+                    <button>Click</button>
+                </Portal>
+            </div>
         );
     }
 }
 
-const App: FC = () => <Form/>;
+// ----
+
+// interface IContext {
+//     isAuth: boolean;
+//     toggleAuth: () => void;
+// }
+//
+// const AuthContext = createContext<IContext>({
+//     isAuth: false,
+//     toggleAuth: () => {
+//     },
+// });
+//
+// class LogIn extends Component<any, any> {
+//     static contextType = AuthContext;
+//     context!: ContextType<typeof AuthContext>;
+//
+//     render() {
+//         const {toggleAuth, isAuth} = this.context;
+//         return <button onClick={toggleAuth}>
+//             {!isAuth ? 'Login' : 'Logout'}
+//         </button>;
+//     }
+// }
+//
+// const Profile: React.FC = (): React.ReactElement => (
+//     <AuthContext.Consumer>
+//         {({isAuth}) => (
+//             <h1>{!isAuth ? 'Please login' : 'You are logged in'}</h1>
+//         )}
+//     </AuthContext.Consumer>
+// );
+//
+// class Context extends Component<any, { isAuth: boolean }> {
+//     readonly state = {
+//         isAuth: false,
+//     };
+//
+//     toggleAuth = () => {
+//         this.setState(({isAuth}) => ({isAuth: !isAuth}));
+//     };
+//
+//     render() {
+//         const {isAuth} = this.state;
+//         const context: IContext = {isAuth, toggleAuth: this.toggleAuth};
+//         return (
+//             <AuthContext.Provider value={context}>
+//                 <LogIn/>
+//                 <Profile/>
+//             </AuthContext.Provider>
+//         );
+//     }
+// }
+
+const App = () => {
+    return (
+        <>
+            <div><MyComponent/></div>
+            {/*<div><Context/></div>*/}
+        </>
+    );
+};
 
 export {App};
