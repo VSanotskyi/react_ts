@@ -1,33 +1,43 @@
-import {FC, ReactNode} from 'react';
-// FC - function component
-// ReactNode - div, h1, p, string...
+import React, {Component} from 'react';
 
-// const Title: FC = () => null; // ok
-// ---
-
-// const Title: FC = () => <h1>Hello world!</h1>;
-// const App = () => <Title/>;
-// ---
-
-// const Title: FC<{ title: string, children: ReactNode }> = ({
-//                                                                title,
-//                                                                children,
-//                                                            }) => {
-//     return <div><h1>{title}</h1><p>{children}</p></div>;
-// };
-// const App = () => <Title title="Hello World!"
-//                          children="Hello, I am children"
-// />;
-// ---
-
-type TitleProps = {
-    title: string,
-    text?: string
+type CounterState = {
+    counter: number
 }
 
-// const Title: FC<Props> = ({title}) => <h1>{title}</h1>;
-const Title = ({title}: TitleProps) => <h1>{title}</h1>;
+type Props = {
+    title?: string
+}
 
-const App = () => <Title title="Hello world!"/>;
+class App extends Component<Props, CounterState> {
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            counter: 0,
+        };
+    }
+
+    handleClick = () => {
+        this.setState(prev => {
+            return {
+                ...prev,
+                counter: prev.counter + 1,
+            };
+        });
+    };
+
+    render() {
+        const {state: {counter}} = this;
+
+        return (
+            <div>
+                <h1>{counter}</h1>
+                <button
+                    onClick={this.handleClick}
+                >{counter > 0 ? counter : null} + 1
+                </button>
+            </div>
+        );
+    }
+}
 
 export {App};
