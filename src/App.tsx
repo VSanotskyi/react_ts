@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {FC, ReactNode} from 'react';
+// FC - function component
+// ReactNode - div, h1, p, string...
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// const Title: FC = () => null; // ok
+// ---
+
+// const Title: FC = () => <h1>Hello world!</h1>;
+// const App = () => <Title/>;
+// ---
+
+// const Title: FC<{ title: string, children: ReactNode }> = ({
+//                                                                title,
+//                                                                children,
+//                                                            }) => {
+//     return <div><h1>{title}</h1><p>{children}</p></div>;
+// };
+// const App = () => <Title title="Hello World!"
+//                          children="Hello, I am children"
+// />;
+// ---
+
+type TitleProps = {
+    title: string,
+    text?: string
 }
 
-export default App;
+// const Title: FC<Props> = ({title}) => <h1>{title}</h1>;
+const Title = ({title}: TitleProps) => <h1>{title}</h1>;
+
+const App = () => <Title title="Hello world!"/>;
+
+export {App};
