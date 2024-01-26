@@ -1,108 +1,81 @@
-import React, {
-    Component,
+import {
     createContext,
-    ContextType,
+    useCallback,
+    useContext, useMemo,
+    useReducer,
+    useRef,
+    useState,
 } from 'react';
-import {createPortal} from 'react-dom';
 
-type PortalProps = {
-    children: React.ReactNode
-}
+// useState
+// interred as number
+// const [value, setValue] = useState(0);
 
-class Portal extends Component<PortalProps> {
-    private el: HTMLDivElement = document.createElement('div');
-
-    public componentDidMount(): void {
-        document.body.appendChild(this.el);
-    }
-
-    public render(): React.ReactElement<PortalProps> {
-        return createPortal(this.props.children, this.el);
-    }
-}
-
-class MyComponent extends Component<any, { counter: number }> {
-    state = {
-        counter: 0,
-    };
-
-    handleClick = () => {
-        this.setState(({counter}) => ({counter: counter + 1}));
-    };
-
-    render() {
-        return (
-            <div onClick={this.handleClick}>
-                <h1>Clicks: {this.state.counter}</h1>
-                <Portal>
-                    <h2>Test Portal</h2>
-                    <button>Click</button>
-                </Portal>
-            </div>
-        );
-    }
-}
-
-// ----
-
-// interface IContext {
-//     isAuth: boolean;
-//     toggleAuth: () => void;
+// Explicitly setting the types
+// const [value, setValue] = useState<number | undefined>(undefined);
+// const [value, setValue] = useState<Array<number>>([]);
+// interface IUSer {
+//     name: string;
+//     id: number;
 // }
-//
-// const AuthContext = createContext<IContext>({
-//     isAuth: false,
-//     toggleAuth: () => {
-//     },
+// const [value, setValue] = useState<Array<IUSer>>([]);
+
+// ---
+// useRef
+// const ref1 = useRef<HTMLElement>(null!);
+// const ref2 = useRef<HTMLElement | null>(null);
+
+// ---
+// useContext
+// interface IThem {
+//     backgroundColor: string;
+//     color: string;
+// }
+// // Context creation
+// const Theme = createContext<IThem>({
+//     backgroundColor: 'black',
+//     color: 'white',
 // });
-//
-// class LogIn extends Component<any, any> {
-//     static contextType = AuthContext;
-//     context!: ContextType<typeof AuthContext>;
-//
-//     render() {
-//         const {toggleAuth, isAuth} = this.context;
-//         return <button onClick={toggleAuth}>
-//             {!isAuth ? 'Login' : 'Logout'}
-//         </button>;
-//     }
+// const themeContext = useContext<IThem>(Theme);
+
+// ---
+// useReducer
+// interface State {
+//     count: number;
 // }
-//
-// const Profile: React.FC = (): React.ReactElement => (
-//     <AuthContext.Consumer>
-//         {({isAuth}) => (
-//             <h1>{!isAuth ? 'Please login' : 'You are logged in'}</h1>
-//         )}
-//     </AuthContext.Consumer>
+// type Action = { type: 'increment' | 'decrement' }
+// const reducer = ({count}: State, {type}: Action) => {
+//     switch (type) {
+//         case 'increment':
+//             return {count: count + 1};
+//         case 'decrement':
+//             return {count: count - 1};
+//         default:
+//             return {};
+//     }
+// };
+// const initState: State = {
+//     count: 0,
+// };
+// const [state, dispatch] = useReducer<any>(reducer, initState);
+
+// ---
+// useCallback & useMemo
+// callback
+// Inferred as number
+// const memoizedCallback = useCallback(() => {
+//         sum(a, b);
+//     }, [a, b],
 // );
-//
-// class Context extends Component<any, { isAuth: boolean }> {
-//     readonly state = {
-//         isAuth: false,
-//     };
-//
-//     toggleAuth = () => {
-//         this.setState(({isAuth}) => ({isAuth: !isAuth}));
-//     };
-//
-//     render() {
-//         const {isAuth} = this.state;
-//         const context: IContext = {isAuth, toggleAuth: this.toggleAuth};
-//         return (
-//             <AuthContext.Provider value={context}>
-//                 <LogIn/>
-//                 <Profile/>
-//             </AuthContext.Provider>
-//         );
-//     }
-// }
+
+// Memo
+// Inferred as (value1: number, value2: number) => number
+// const memoizedValue = useMemo((a: number, b: number) => sum(a, b), [a, b]);
+
 
 const App = () => {
     return (
-        <>
-            <div><MyComponent/></div>
-            {/*<div><Context/></div>*/}
-        </>
+        <div>App</div>
     );
 };
 
