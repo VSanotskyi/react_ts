@@ -1,81 +1,48 @@
-import {
-    createContext,
-    useCallback,
-    useContext, useMemo,
-    useReducer,
-    useRef,
-    useState,
-} from 'react';
+import React, {useState} from 'react';
 
-// useState
-// interred as number
-// const [value, setValue] = useState(0);
+type BaseProps = {
+    primTitle: string;
+    secTitle: string;
 
-// Explicitly setting the types
-// const [value, setValue] = useState<number | undefined>(undefined);
-// const [value, setValue] = useState<Array<number>>([]);
-// interface IUSer {
-//     name: string;
-//     id: number;
-// }
-// const [value, setValue] = useState<Array<IUSer>>([]);
+}
 
-// ---
-// useRef
-// const ref1 = useRef<HTMLElement>(null!);
-// const ref2 = useRef<HTMLElement | null>(null);
+type InjectedProps = {
+    toggleStatus: boolean;
+    toggle: () => void
+}
 
-// ---
-// useContext
-// interface IThem {
-//     backgroundColor: string;
-//     color: string;
-// }
-// // Context creation
-// const Theme = createContext<IThem>({
-//     backgroundColor: 'black',
-//     color: 'white',
-// });
-// const themeContext = useContext<IThem>(Theme);
+const Button = ({primTitle, secTitle, toggle, toggleStatus}: any) => {
+    return (
+        <button onClick={toggle}>{
+            toggleStatus ? primTitle : secTitle
+        }</button>
+    );
+};
 
-// ---
-// useReducer
-// interface State {
-//     count: number;
-// }
-// type Action = { type: 'increment' | 'decrement' }
-// const reducer = ({count}: State, {type}: Action) => {
-//     switch (type) {
-//         case 'increment':
-//             return {count: count + 1};
-//         case 'decrement':
-//             return {count: count - 1};
-//         default:
-//             return {};
-//     }
-// };
-// const initState: State = {
-//     count: 0,
-// };
-// const [state, dispatch] = useReducer<any>(reducer, initState);
 
-// ---
-// useCallback & useMemo
-// callback
-// Inferred as number
-// const memoizedCallback = useCallback(() => {
-//         sum(a, b);
-//     }, [a, b],
-// );
+const withToggle = <BaseProps extends InjectedProps>(PassedComponent: React.ComponentType<BaseProps>) => {
+    return (props: BaseProps) => {
+        const [toggleStatus, setToggleStatus] = useState(false);
 
-// Memo
-// Inferred as (value1: number, value2: number) => number
-// const memoizedValue = useMemo((a: number, b: number) => sum(a, b), [a, b]);
+        return (
+            <PassedComponent
+                {...props as BaseProps}
+                toggle={() => setToggleStatus(!toggleStatus)}
+                toggleStatus={toggleStatus}
+            />
+        );
+    };
+};
 
+const ToggleBtn = withToggle(Button);
 
 const App = () => {
     return (
-        <div>App</div>
+        <div>
+            <ToggleBtn primTitle="Main Title"
+                       secTitle="additional Title"
+            />
+        </div>
     );
 };
 
