@@ -1,48 +1,29 @@
-import React, {useState} from 'react';
+import {FC} from 'react';
+import {Route, Routes} from 'react-router-dom';
+import {Home} from './components/Home/Home';
+import {Layout} from './components/Layout/Layout';
+import {PostList} from './components/PostList/PostList';
+import {Contacts} from './components/Contacts/contacts';
 
-type BaseProps = {
-    primTitle: string;
-    secTitle: string;
 
-}
-
-type InjectedProps = {
-    toggleStatus: boolean;
-    toggle: () => void
-}
-
-const Button = ({primTitle, secTitle, toggle, toggleStatus}: any) => {
+const App: FC = () => {
     return (
-        <button onClick={toggle}>{
-            toggleStatus ? primTitle : secTitle
-        }</button>
-    );
-};
+        <Routes>
+            <Route path="/"
+                   element={<Layout/>}
+            >
+                <Route index
+                       element={<Home/>}
+                />
+                <Route path="/posts"
+                       element={<PostList/>}
+                />
+                <Route path="/contacts"
+                       element={<Contacts/>}
+                />
+            </Route>
 
-
-const withToggle = <BaseProps extends InjectedProps>(PassedComponent: React.ComponentType<BaseProps>) => {
-    return (props: BaseProps) => {
-        const [toggleStatus, setToggleStatus] = useState(false);
-
-        return (
-            <PassedComponent
-                {...props as BaseProps}
-                toggle={() => setToggleStatus(!toggleStatus)}
-                toggleStatus={toggleStatus}
-            />
-        );
-    };
-};
-
-const ToggleBtn = withToggle(Button);
-
-const App = () => {
-    return (
-        <div>
-            <ToggleBtn primTitle="Main Title"
-                       secTitle="additional Title"
-            />
-        </div>
+        </Routes>
     );
 };
 
